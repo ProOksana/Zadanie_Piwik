@@ -1,68 +1,37 @@
-from selenium.webdriver.chrome.webdriver import WebDriver
-import unittest
+import pytest
 from fields import Fields
-
-def is_alert_present(wd):
-    try:
-        wd.switch_to_alert().text
-        return True
-    except:
-        return False
-
-class login(unittest.TestCase):
-    def setUp(self):
-        self.wd = WebDriver()
-        self.wd.implicitly_wait(60)
-
-    def open_home_page(self, wd):
-        wd.get("file:///C:/Users/proko/Documents/GitHub/Zadanie_Piwik/index2%20(2).html")
+from application import Application
 
 
-    def populating_fields(self, wd, fields):
-        wd.find_element_by_name("firstname").click()
-        wd.find_element_by_name("firstname").clear()
-        wd.find_element_by_name("firstname").send_keys(fields.firstname)
-        wd.find_element_by_name("lastname").click()
-        wd.find_element_by_name("lastname").clear()
-        wd.find_element_by_name("lastname").send_keys(fields.lastname)
+@pytest.fixture
+def app(request):
+    fixture = Application()
+    request.addfinalizer(fixture.destroy)
+    return fixture
 
 
-    def submit_data(self, wd):
-        wd.find_element_by_css_selector("input[type=\"submit\"]").click()
+def test_login(app):
+    app.populating_fields(Fields(firstname="Oksana", lastname="Prokopek"))
+    app.submit_data()
 
 
-    def test_login(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="Oksana", lastname="Prokopek"))
-        self.submit_data(wd)
+def test_empty_login(app):
+    app.populating_fields(Fields(firstname="", lastname=""))
+    app.submit_data()
 
 
-    def test_empty_login(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="", lastname=""))
-        self.submit_data(wd)
+def test_with_enter(app):
+    app.populating_fields(Fields(firstname="   ", lastname="   "))
+    app.submit_data()
 
 
-    def test_with_enter(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="   ", lastname="   "))
-        self.submit_data(wd)
+def test_spec_char(app):
+    app.populating_fields(Fields(firstname="d426373!@#$%^&*()_+}{:?><", lastname="d426373!@#$%^&*()_+}{:?><"))
+    app.submit_data()
 
 
-    def test_spec_char(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="d426373!@#$%^&*()_+}{:?><", lastname="d426373!@#$%^&*()_+}{:?><"))
-        self.submit_data(wd)
-
-
-    def test_max_length(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="Start khgkudhfuhgkdfhog sldnvgldjnrgjndjlfngbjdnlbjngfnkjngfbkjnkjg73ryehwifhrkghdf"
+def test_max_length(app):
+    app.populating_fields(Fields(firstname="Start khgkudhfuhgkdfhog sldnvgldjnrgjndjlfngbjdnlbjngfnkjngfbkjnkjg73ryehwifhrkghdf"
                                              "sfhvbksbfkuksvbnfkskbfndkndbknkdunfknkdbjfkdurotiguw48t938w4u98tugef948ug9e8r9hu8rth"
                                              "dufhbogudofbuijdotibjoeitjboinjtrnojhtboiejr8ot3 oiwrjgo3ij4oe59hjr0e59jh950hjr9t50h riej"
                                              "eirojgboeirjboijetoibjojgtrnoibjrgoijrjntoietoigjot83u4r5o38409 iwvngoierngoienrooijgierjg"
@@ -72,19 +41,9 @@ class login(unittest.TestCase):
                                         "djfnbjdngbljndlgknblkdnglkbmldkmnlkndflkbnlgjnlbngfbkdjgkbjkf dlkfbhjldjitglhdjgfblknldkg"
                                         "df;kmblkdgmblkmdglknmlfmdfhbndljtnguheotoy8e5roigj jrglidjflhigdlj ldjgldjigjpdifjgnl djvnfds"
                                         "lsnfvblksnlfsm fdsjbnlsijrojifwoeurjoqw83u4982398ru49i7ytei547yt985ue9y804e58tguoerghero"))
-        self.submit_data(wd)
+    app.submit_data()
 
 
-    def test_enter_link(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.populating_fields(wd, Fields(firstname="http://www.montypython.com/", lastname="http://www.montypython.com/"))
-        self.submit_data(wd)
-
-
-    def tearDown(self):
-        self.wd.quit()
-
-
-if __name__ == "__main__":
-    unittest.main()
+def test_enter_link(app):
+    app.populating_fields(Fields(firstname="http://www.montypython.com/", lastname="http://www.montypython.com/"))
+    app.submit_data()
