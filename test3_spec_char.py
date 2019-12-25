@@ -9,12 +9,12 @@ def is_alert_present(wd):
     except:
         return False
 
-class login(unittest.TestCase):
+class spec_char(unittest.TestCase):
     def setUp(self):
         self.wd = WebDriver()
         self.wd.implicitly_wait(60)
 
-    def spec_char(self):
+    def test_login(self):
         success = True
         wd = self.wd
         wd.get("file:///C:/Users/proko/Documents/GitHub/Zadanie_Piwik/index2%20(2).html")
@@ -24,7 +24,6 @@ class login(unittest.TestCase):
         wd.find_element_by_name("lastname").click()
         wd.find_element_by_name("lastname").clear()
         wd.find_element_by_name("lastname").send_keys("d426373!@#$%^&*()_+}{:?><")
-        #wd.find_element_by_name("submit").click()
         wd.find_element_by_css_selector("input[type=\"submit\"]").click()
         self.assertTrue(success)
 

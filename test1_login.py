@@ -24,7 +24,6 @@ class login(unittest.TestCase):
         wd.find_element_by_name("lastname").click()
         wd.find_element_by_name("lastname").clear()
         wd.find_element_by_name("lastname").send_keys("Prokopek")
-        #wd.find_element_by_name("submit").click()
         wd.find_element_by_css_selector("input[type=\"submit\"]").click()
         self.assertTrue(success)
 

@@ -36,7 +36,6 @@ class max_length(unittest.TestCase):
                                                       "fijlshzgkuzdhflglzdjflzgsljijeglijzsldighlbzdnflnzsu45iUHSLDIJGLIJS JNXFXBD "
                                                       "LDFKNGLDIRJGIDJROIncxb vxclnxlodijgo"
                                                       "dijrhdjzvnkjsdn andfnalejvgnljsnrlgdsgjlijdslfigjlijsdjislijrofsidflisdjlfisj")
-        #wd.find_element_by_name("submit").click()
         wd.find_element_by_css_selector("input[type=\"submit\"]").click()
         self.assertTrue(success)
 
